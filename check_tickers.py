@@ -2,6 +2,7 @@ import json
 import yfinance as yf
 from datetime import date,timedelta
 import pandas as pd
+from IPython.display import display
 
 class bcolors:
     HEADER = '\033[95m'
@@ -32,9 +33,26 @@ with open('tickers.json') as f:
     data = json.load(f)
 tickers = data['tickers']
 
-printHEADER('----------------------------------------------')
+#printHEADER('----------------------------------------------')
+
+frmts = '{:^s}'
+frmts2 = '{: <8s}'
+cols = [
+        frmts.format(bcolors.OKCYAN + str(dend) + bcolors.ENDC),
+        frmts.format(bcolors.OKCYAN + '52 high' + bcolors.ENDC),
+        frmts.format(bcolors.OKCYAN + '52 low' + bcolors.ENDC),
+        frmts.format(bcolors.OKCYAN + '52 0.95' + bcolors.ENDC),
+        frmts.format(bcolors.OKCYAN + '52 0.90' + bcolors.ENDC),
+        frmts.format(bcolors.OKCYAN + '52 0.85' + bcolors.ENDC),
+        frmts.format(bcolors.OKCYAN + '50 day avg' + bcolors.ENDC),
+        frmts.format(bcolors.OKCYAN + '200 day avg' + bcolors.ENDC),
+        frmts.format(bcolors.OKCYAN + str(dstart) + bcolors.ENDC),
+        ]
+frmt = '{:g}'
+to_print = pd.DataFrame(columns=cols)
+#print(to_print)
 for ti in tickers:
-    try:
+    #try:
         tick = yf.Ticker(ti)
         history = tick.history(start=dstart,end=dend)
         fifty2High = tick.info['fiftyTwoWeekHigh']
@@ -48,50 +66,85 @@ for ti in tickers:
         twoHundredDayAverage = tick.info['twoHundredDayAverage']
         # tests to buy or hold
         # test if 0.9 of 52 week high
-        printHEADER(ti)
-        printHEADER(tick.info['longName'])
-        to_print = pd.DataFrame(
-                {
-                    dend:close,
-                    '52 week high':fifty2High,
-                    '52 week low':fifty2Low,
-                    '52 week test 0.95':fifty2Test,
-                    '52 week test 0.90':fifty2Test2,
-                    '52 week test 0.85':fifty2Test3,
-                    '50 day average':fiftyDayAverage,
-                    '200 day average':twoHundredDayAverage,
-                    dstart:firstHistory 
-                    },
-                index=[ti,])
-        print(to_print)
+        #printHEADER(ti)
+        printHEADER(frmts2.format(ti) + tick.info['longName'])
+        #to_printi = pd.DataFrame(
+                #[[
+                    #dend:close,
+                    #'52 week high':fifty2High,
+                    #'52 week low':fifty2Low,
+                    #'52 week test 0.95':fifty2Test,
+                    #'52 week test 0.90':fifty2Test2,
+                    #'52 week test 0.85':fifty2Test3,
+                    #'50 day average':fiftyDayAverage,
+                    #'200 day average':twoHundredDayAverage,
+                    #dstart:firstHistory 
+                    #str(close),
+                    #str(fifty2High),
+                    #str(fifty2Low),
+                    #str(fifty2Test),
+                    #str(fifty2Test2),
+                    #str(fifty2Test3),
+                    #str(fiftyDayAverage),
+                    #str(twoHundredDayAverage),
+                    #str(firstHistory),
+                    #]],
+                #columns=cols,
+                #index=[ti,])
+        #to_print.append(to_printi)
+        #print(to_print)
+        #display(to_print)
+        #print(to_print.to_string())
+        #display(to_print.style.bar(subset=['200 day average',],color='#d65f5f').render())
+        tis = ti #frmts.format(bcolors.HEADER + ti + bcolors.ENDC)
+        to_print.loc[tis,cols[0]] = frmts.format(bcolors.HEADER + frmt.format(close) + bcolors.ENDC)
+        to_print.loc[tis,cols[1]] = frmts.format(bcolors.HEADER + frmt.format(fifty2High) + bcolors.ENDC)
+        to_print.loc[tis,cols[2]] = frmts.format(bcolors.HEADER + frmt.format(fifty2Low) + bcolors.ENDC)
         if close<=fifty2Test:
-            printBUY(' buy based on 0.95 of 52 week high')
+            #printBUY(' buy based on 0.95 of 52 week high')
+            to_print.loc[tis,cols[3]] = frmts.format(bcolors.OKGREEN + frmt.format(fifty2Test) + bcolors.ENDC)
+            #print(to_print.to_string())
+            #print(to_print)
         else:
-            printHOLD(' hold based on 0.95 of 52 week high')
+            #printHOLD(' hold based on 0.95 of 52 week high')
+            to_print.loc[tis,cols[3]] = frmts.format(bcolors.FAIL + frmt.format(fifty2Test) + bcolors.ENDC)
         if close<=fifty2Test2:
-            printBUY(' buy based on 0.90 of 52 week high')
+            #printBUY(' buy based on 0.90 of 52 week high')
+            to_print.loc[tis,cols[4]] = frmts.format(bcolors.OKGREEN + frmt.format(fifty2Test2) + bcolors.ENDC)
         else:
-            printHOLD(' hold based on 0.90 of 52 week high')
+            #printHOLD(' hold based on 0.90 of 52 week high')
+            to_print.loc[tis,cols[4]] = frmts.format(bcolors.FAIL + frmt.format(fifty2Test2) + bcolors.ENDC)
         if close<=fifty2Test3:
-            printBUY(' buy based on 0.85 of 52 week high')
+            #printBUY(' buy based on 0.85 of 52 week high')
+            to_print.loc[tis,cols[5]] = frmts.format(bcolors.OKGREEN + frmt.format(fifty2Test3) + bcolors.ENDC)
         else:
-            printHOLD(' hold based on 0.85 of 52 week high')
+            #printHOLD(' hold based on 0.85 of 52 week high')
+            to_print.loc[tis,cols[5]] = frmts.format(bcolors.FAIL + frmt.format(fifty2Test3) + bcolors.ENDC)
         # test if below moving average
         if close<=fiftyDayAverage:
-            printBUY(' buy based on 50 day average')
+            #printBUY(' buy based on 50 day average')
+            to_print.loc[tis,cols[6]] = frmts.format(bcolors.OKGREEN + frmt.format(fiftyDayAverage) + bcolors.ENDC)
         else: 
-            printHOLD(' hold based on 50 day average')
+            #printHOLD(' hold based on 50 day average')
+            to_print.loc[tis,cols[6]] = frmts.format(bcolors.FAIL + frmt.format(fiftyDayAverage) + bcolors.ENDC)
         if close<=twoHundredDayAverage:
-            printBUY(' buy based on 200 day average')
+            #printBUY(' buy based on 200 day average')
+            to_print.loc[tis,cols[7]] = frmts.format(bcolors.OKGREEN + frmt.format(twoHundredDayAverage) + bcolors.ENDC)
         else: 
-            printHOLD(' hold based on 200 day average')
+            #printHOLD(' hold based on 200 day average')
+            to_print.loc[tis,cols[7]] = frmts.format(bcolors.FAIL + frmt.format(twoHundredDayAverage) + bcolors.ENDC)
         # test if below previous period
         if close <= firstHistory:
-            printBUY(' buy based on below previous period')
+            #printBUY(' buy based on below previous period')
+            to_print.loc[tis,cols[8]] = frmts.format(bcolors.OKGREEN + frmt.format(firstHistory) + bcolors.ENDC)
         else:
-            printHOLD(' hold based on above previous period')
-    except:
-        print(' could not open ',ti,' using yfinance')
-    printHEADER('----------------------------------------------')
+            #printHOLD(' hold based on above previous period')
+            to_print.loc[tis,cols[8]] = frmts.format(bcolors.FAIL + frmt.format(firstHistory) + bcolors.ENDC)
+    #except:
+        #print(' could not open ',ti,' using yfinance')
+    #print(to_print)
+        #printHEADER('----------------------------------------------')
+printHEADER('----------------------------------------------')
+print(to_print)
 
 
