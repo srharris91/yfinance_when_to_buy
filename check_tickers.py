@@ -3,6 +3,8 @@ import yfinance as yf
 from datetime import date,timedelta
 import pandas as pd
 from IPython.display import display
+import matplotlib.pyplot as plt
+plt.style.use('seaborn-notebook')
 
 class bcolors:
     HEADER = '\033[95m'
@@ -21,10 +23,13 @@ def printHEADER(string): print(bcolors.HEADER + string + bcolors.ENDC)
 
 days_to_subtract = 30
 period = timedelta(days=days_to_subtract)
+days_to_subtract_long = 2555 #1095
+period_long = timedelta(days=days_to_subtract_long)
 today = date.today()
 #d = today.strftime("%d/%m/%Y")
 dend = today.isoformat()
 dstart = (today - period).isoformat()
+dstart_long = (today - period_long).isoformat()
 
 print('dstart = ',dstart)
 print('dend   = ',dend)
@@ -50,11 +55,15 @@ cols = [
         ]
 frmt = '{:g}'
 to_print = pd.DataFrame(columns=cols)
+fig,ax = plt.subplots(tight_layout=True)
+ax.set_ylabel(r'$\frac{\mathrm{val}}{\mathrm{val(0)}}$')
 #print(to_print)
 for ti in tickers:
     #try:
         tick = yf.Ticker(ti)
         history = tick.history(start=dstart,end=dend)
+        history_long = tick.history(start=dstart_long,end=dend)
+        ax.plot_date(history_long.index,history_long['Close']/history_long['Close'][0],'.-',label=ti)
         fifty2High = tick.info['fiftyTwoWeekHigh']
         fifty2Low  = tick.info['fiftyTwoWeekLow']
         close  = tick.info['previousClose']
@@ -144,7 +153,10 @@ for ti in tickers:
         #print(' could not open ',ti,' using yfinance')
     #print(to_print)
         #printHEADER('----------------------------------------------')
+ax.legend(loc='best',numpoints=1)
+ax.xaxis.set_tick_params(rotation=30)
+fig.show()
 printHEADER('----------------------------------------------')
 print(to_print)
 
-
+input('ENTER to exit')
