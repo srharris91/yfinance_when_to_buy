@@ -56,14 +56,23 @@ cols = [
 frmt = '{:g}'
 to_print = pd.DataFrame(columns=cols)
 fig,ax = plt.subplots(tight_layout=True)
+fig2,ax2 = plt.subplots(tight_layout=True)
 ax.set_ylabel(r'$\frac{\mathrm{val}}{\mathrm{val(0)}}$')
+ax2.set_ylabel(r'$\frac{\mathrm{val}}{\mathrm{val(0)}}$')
 #print(to_print)
-for ti in tickers:
+for i,ti in enumerate(tickers):
     #try:
         tick = yf.Ticker(ti)
         history = tick.history(start=dstart,end=dend)
         history_long = tick.history(start=dstart_long,end=dend)
-        ax.plot_date(history_long.index,history_long['Close']/history_long['Close'][0],'.-',label=ti)
+        history_long_short_rolling_mean = history_long['Close'].rolling(5).mean()
+        history_long_short_rolling_mean2 = history_long['Close'].rolling(50).mean()
+        history_long_long_rolling_mean = history_long['Close'].rolling(200).mean()
+        ax.plot_date(history_long.index,history_long['Close']/history_long['Close'][0],'.-',color='C'+str(i),label=ti)
+        ax.plot_date(history_long.index,history_long_short_rolling_mean/history_long['Close'][0],':',color='C'+str(i),label=ti+' rolling mean of 5 days')
+        ax.plot_date(history_long.index,history_long_short_rolling_mean2/history_long['Close'][0],'-.',color='C'+str(i),label=ti+' rolling mean of 50 days')
+        ax.plot_date(history_long.index,history_long_long_rolling_mean/history_long['Close'][0],'--',color='C'+str(i),label=ti+' rolling mean of 200 days')
+        ax2.plot_date(history.index,history['Close']/history['Close'][0],'.-',color='C'+str(i),label=ti)
         fifty2High = tick.info['fiftyTwoWeekHigh']
         fifty2Low  = tick.info['fiftyTwoWeekLow']
         close  = tick.info['previousClose']
@@ -156,6 +165,9 @@ for ti in tickers:
 ax.legend(loc='best',numpoints=1)
 ax.xaxis.set_tick_params(rotation=30)
 fig.show()
+ax2.legend(loc='best',numpoints=1)
+ax2.xaxis.set_tick_params(rotation=30)
+fig2.show()
 printHEADER('----------------------------------------------')
 print(to_print)
 
