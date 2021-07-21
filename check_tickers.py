@@ -2,7 +2,7 @@ import json
 import yfinance as yf
 from datetime import date,timedelta
 import pandas as pd
-from IPython.display import display
+#from IPython.display import display
 import matplotlib.pyplot as plt
 plt.style.use('seaborn-notebook')
 
@@ -37,6 +37,7 @@ print('dend   = ',dend)
 with open('tickers.json') as f:
     data = json.load(f)
 tickers = data['tickers']
+print(tickers)
 
 #printHEADER('----------------------------------------------')
 

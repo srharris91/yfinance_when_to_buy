@@ -1,4 +1,4 @@
-{
+{ 
     "tickers": [
         "VSGAX",
         "VTWAX",
@@ -6,6 +6,7 @@
         "VUG",
         "VGT",
         "GBTC",
+        "ETH",
         "VOO"
     ]
 }
