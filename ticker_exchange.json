@@ -3,6 +3,7 @@
     "intervals":[
         "1h",
         "1d",
+        "1W",
         "1M"
     ],
     "ticker_exchange": {

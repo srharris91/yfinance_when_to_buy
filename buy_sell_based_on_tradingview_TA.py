@@ -5,7 +5,8 @@ from investopedia_api import InvestopediaApi, TradeExceedsMaxSharesException
 import json
 import pprint
 
-
+# user input of sending an email about the trade?
+send_email = False
 
 # investopedia
 credentials = {}
@@ -213,12 +214,12 @@ tickers_to_buy,tickers_to_sell = get_buy_or_sell(ticker_exchange,intervals,ratio
 
 for pos in tickers_to_buy:
     trade1 = client.StockTrade(symbol=pos, quantity=1, trade_type='buy',
-                               order_type='market', duration='good_till_cancelled', send_email=True)
+                               order_type='market', duration='good_till_cancelled', send_email=send_email)
     # validate the trade
     trade_info = trade1.validate()
     #pprint.pprint(trade_info)
     #trade_info = trade1.validate()
-    price = float(trade_info['Est_Total'][1:])
+    price = float(trade_info['Est_Total'][1:].replace(',',''))
     if buying_power > price:
         if trade1.validated:
             pprint.pprint(trade_info)
@@ -246,12 +247,12 @@ for pos in long_positions:
 buy_position,sell_position = get_buy_or_sell(ticker_exchange_positions,intervals,ratio)
 for pos in buy_position:
     trade1 = client.StockTrade(symbol=pos, quantity=1, trade_type='buy',
-                               order_type='market', duration='good_till_cancelled', send_email=True)
+                               order_type='market', duration='good_till_cancelled', send_email=send_email)
     # validate the trade
     trade_info = trade1.validate()
     #pprint.pprint(trade_info)
     #trade_info = trade1.validate()
-    price = float(trade_info['Est_Total'][1:])
+    price = float(trade_info['Est_Total'][1:].replace(',',''))
     if buying_power > price:
         if trade1.validated:
             pprint.pprint(trade_info)
@@ -259,7 +260,7 @@ for pos in buy_position:
             buying_power -= price
 for pos in sell_position:
     trade1 = client.StockTrade(symbol=pos, quantity=1, trade_type='sell',
-                               order_type='market', duration='good_till_cancelled', send_email=True)
+                               order_type='market', duration='good_till_cancelled', send_email=send_email)
     # validate the trade
     trade_info = trade1.validate()
     #pprint.pprint(trade_info)
