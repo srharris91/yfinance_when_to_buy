@@ -22,108 +22,6 @@ with open('ticker_exchange.json') as ifh:
 ticker_exchange = tickers_exchange_json['ticker_exchange']
 intervals = tickers_exchange_json['intervals']
 ratio = tickers_exchange_json['ratio']
-#amex='AMEX'
-#nyse='NYSE'
-#nasdaq='NASDAQ'
-#ticker_exchange = {
-        #'VBK':amex,     # VSGAX ETF small cap growth
-        #'VT':amex,      # VTWAX ETF total world index
-        #'VUG':amex,     # large cap growth index
-        #'VOO':amex,     # S&P 500 index ETF
-        #'VGT':amex,     # technology index etf
-        #'QQQ':nasdaq,   # invesco trust series 1
-        #'TQQQ':nasdaq,  # ProShares UltraPro QQQ leveraged
-        #'AAPL':nasdaq,  # ProShares UltraPro QQQ leveraged
-        #'FB':nasdaq,    # Facebook
-        #'NVDA':nasdaq,  # Nvidia
-        #'MSFT':nasdaq,  # microsoft
-        #'AMZN':nasdaq,  # amazon
-        #'GOOGL':nasdaq, # google
-        #'GOOG':nasdaq,  # google
-        #'TSLA':nasdaq,  # tesla
-        #'V':nyse,       # Visa
-        #'PYPL':nasdaq,  # paypal
-        #'HD':nyse,      # Home depot
-        #'MA':nyse,      # Mastercard
-        #'DIS':nyse,     # Disney
-        #'ADBE':nasdaq,  # Adobe
-        #'NFLX':nasdaq,  # netflix
-        #'CRM':nyse,     # salesforce
-        #'TMO':nyse,     # Thermo Fisher Scientific
-        #'NKE':nyse,     # Nike
-        #'ACN':nyse,     # Accenture Plc
-        #'TXN':nasdaq,   # Texas Instruments Incorporated
-        #'COST':nasdaq,  # Costco
-        #'MCD':nyse,     # McDonald's
-        #'LIN':nyse,     # Linde PLC
-        #'UNP':nyse,     # Union Pacific Corporation
-        #'BA':nyse,      # Boeing Co
-        #'LOW':nyse,     # Lowe's
-        #'SBUX':nasdaq,  # Starbucks corporation
-        #'AMAT':nasdaq,  # Applied Materials
-        #'INTU':nasdaq,  # Intuit Inc.
-        #'AMT':nyse,     # American Tower Corp
-        #'AMD':nasdaq,   # Advanced Micro Devices
-        #'ISRG':nasdaq,  # Intuitive Surgical 
-        #'NOW':nyse,     # ServiceNow
-        #'SPGI':nyse,    # S&P Global Inc.
-        #'SQ':nyse,      # Square Inc.
-        #'MU':nasdaq,    # Micron Technology Inc.
-        #'LRCX':nasdaq,  # Lam Research Corp.
-        #'AVGO':nasdaq,  # Broadcom Inc.
-        #'BKNG':nasdaq,  # Booking Holdings
-        #'ZTS':nyse,
-        #'CHTR':nasdaq,
-        #'FIS':nyse,
-        #'DHR':nyse,
-        #'ADP':nasdaq,
-        #'CCI':nyse,
-        #'SYK':nyse,
-        #'QCOM':nasdaq,
-        #'MRNA':nasdaq,
-        #'SNAP':nyse,
-        #'ZM':nasdaq,
-        #'TJX':nyse,
-        #'UPS':nyse,
-        #'ATVI':nasdaq,
-        #'EQIX':nasdaq,
-        #'EL':nyse,
-        #'ILMN':nasdaq,
-        #'CL':nyse,
-        #'UBER':nyse,
-        #'SHW':nyse,
-        #'EW':nyse,
-        #'ADSK':nasdaq,
-        #'FISV':nasdaq,
-        #'TWLO':nyse,
-        #'SNOW':nyse,
-        #'BSX':nyse,
-        #'MCO':nyse,
-        #'REGN':nasdaq,
-        #'GPN':nyse,
-        #'IDXX':nasdaq,
-        #'ECL':nyse,
-        #'ROKU':nasdaq,
-        #'VRTX':nasdaq,
-        #'TWTR':nyse,
-        #'DG':nyse,
-        #'DOCU':nasdaq,
-        #'AON':nyse,
-        #'CRWD':nasdaq,
-        #'KLAC':nasdaq,
-        #'ROP':nyse,
-        #'MRVL':nasdaq,
-        #'IQV':nyse,
-        #'ALGN':nasdaq,
-        #'A':nyse,
-        #'WDAY':nasdaq,
-        #'PSA':nyse,
-        #'LMT':nyse,
-        #'ROST':nasdaq,
-        #'CMG':nyse,
-        #'LULU':nasdaq,
-        #'PINS':nyse,
-        #}
 #intervals = [
         #'1m',#Interval.INTERVAL_1_MINUTE,
         #'5m',#Interval.INTERVAL_5_MINUTES,
@@ -144,6 +42,7 @@ handler = TA_Handler(
 print(bcolors.NEUTRAL,'  {:10s}  {:15s}  '.format('Ticker','Recommendation'),'Summary of Technical Analysis',bcolors.ENDC)
 print('--------------------------------------------------------------------------')
 tickers_to_buy = []
+tickers_to_sell = []
 for symbol,exchange in ticker_exchange.items():
     handler.set_symbol_as(symbol)
     handler.exchange = exchange
@@ -180,6 +79,7 @@ for symbol,exchange in ticker_exchange.items():
     elif shaun_recommendation == 'SELL':
         #print(bcolors.SELL,handler.symbol,shaun_recommendation,summary,bcolors.ENDC)
         print(bcolors.SELL,'  {:10s}  {:15s}  '.format(handler.symbol,shaun_recommendation),summary,bcolors.ENDC)
+        tickers_to_sell.append(handler.symbol)
     elif shaun_recommendation == 'NEUTRAL':
         #print(bcolors.NEUTRAL,handler.symbol,shaun_recommendation,summary,bcolors.ENDC)
         print(bcolors.NEUTRAL,'  {:10s}  {:15s}  '.format(handler.symbol,shaun_recommendation),summary,bcolors.ENDC)
@@ -188,3 +88,4 @@ for symbol,exchange in ticker_exchange.items():
 #print(handler.get_indicators())
 
 print(bcolors.BUY+'recommended to buy ',tickers_to_buy,bcolors.ENDC)
+print(bcolors.SELL+'recommended to sell ',tickers_to_sell,bcolors.ENDC)

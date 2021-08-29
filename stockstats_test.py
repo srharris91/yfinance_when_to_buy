@@ -18,10 +18,12 @@ print(history)
 stock = StockDataFrame.retype(history)
 print(stock)
 
-print(stock['macd'])
+image_list = ['rsi_6','rsi_12','wr_10','wr_6','macd','close_6_ema','close_6_sma','trix','tema','cci','cci_20','kdjk','dma','pdi','mdi','dx','adx','adxr','cr','tr','atr']
+print(stock[image_list])
 
 print(stock)
+print(stock.columns)
 
-ax = stock.plot()
+ax = stock[image_list].plot()
 plt.show()
 input('Enter to Exit')
