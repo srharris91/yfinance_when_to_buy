@@ -101,12 +101,4 @@ axtick.legend(loc='best',numpoints=1)
 figtick.show()
 fig.show()
 
-
-
-
-
-
-
-days_avg = 14 # how many hours to look back to predict the future
-
 input('Enter to exit')
